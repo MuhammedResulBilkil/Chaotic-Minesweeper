@@ -25,6 +25,9 @@ public:
 private:
 
 	UPROPERTY()
+	ACameraActor* CameraActor;
+	
+	UPROPERTY()
 	UUserWidget* GeneralUIWidget;
 
 	UPROPERTY()
