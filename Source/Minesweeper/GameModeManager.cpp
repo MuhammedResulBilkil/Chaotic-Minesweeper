@@ -23,8 +23,8 @@ void AGameModeManager::BeginPlay()
 		for (AActor* Actor : CameraActorArray)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("CameraActor: %s"), *Actor->GetName());
-
-			if(Actor->GetName().Equals("Camera_Main"))
+			
+			if(Actor->ActorHasTag("Camera_Main"))
 			{
 				CameraActor = Cast<ACameraActor>(Actor);
 				break;
