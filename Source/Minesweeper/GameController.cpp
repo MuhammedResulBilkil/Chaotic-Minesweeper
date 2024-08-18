@@ -3,6 +3,8 @@
 
 #include "GameController.h"
 
+#include "Camera/CameraActor.h"
+
 // Sets default values
 AGameController::AGameController(): MainCameraActor(nullptr)
 {
@@ -14,6 +16,8 @@ AGameController::AGameController(): MainCameraActor(nullptr)
 void AGameController::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	GetWorld()->GetFirstPlayerController()->SetViewTargetWithBlend(MainCameraActor, 0);
 	
 }
 

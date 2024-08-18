@@ -4,10 +4,8 @@
 #include "GameModeManager.h"
 
 #include "Blueprint/UserWidget.h"
-#include "Camera/CameraActor.h"
 #include "Components/Slider.h"
 #include "Components/TextBlock.h"
-#include "Kismet/GameplayStatics.h"
 
 void AGameModeManager::BeginPlay()
 {
@@ -17,21 +15,6 @@ void AGameModeManager::BeginPlay()
 	if (GeneralUI)
 	{
 		GeneralUIWidget = CreateWidget<UUserWidget>(GetWorld(), GeneralUI);
-		TArray<AActor*> CameraActorArray;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACameraActor::StaticClass(), CameraActorArray);
-
-		for (AActor* Actor : CameraActorArray)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("CameraActor: %s"), *Actor->GetName());
-			
-			if(Actor->ActorHasTag("Camera_Main"))
-			{
-				CameraActor = Cast<ACameraActor>(Actor);
-				break;
-			}
-		}
-		
-		GetWorld()->GetFirstPlayerController()->SetViewTargetWithBlend(CameraActor, 0);
 		
 		if (GeneralUIWidget)
 		{
