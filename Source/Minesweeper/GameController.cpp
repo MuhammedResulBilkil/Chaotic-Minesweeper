@@ -18,7 +18,6 @@ void AGameController::BeginPlay()
 	Super::BeginPlay();
 	
 	GetWorld()->GetFirstPlayerController()->SetViewTargetWithBlend(MainCameraActor, 0);
-	
 }
 
 // Called every frame

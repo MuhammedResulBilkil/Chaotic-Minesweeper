@@ -11,6 +11,8 @@ void AGameModeManager::BeginPlay()
 {
 	Super::BeginPlay();
 
+	GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(true);
+
 	//Create viewport
 	if (GeneralUI)
 	{
@@ -27,7 +29,6 @@ void AGameModeManager::BeginPlay()
 			GeneralUIWidget->AddToViewport();
 		}
 	}
-	
 }
 
 void AGameModeManager::GridAsSquareSliderValueChanged(float Value)
