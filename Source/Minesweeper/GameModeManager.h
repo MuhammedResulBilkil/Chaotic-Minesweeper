@@ -23,16 +23,21 @@ public:
 	TSubclassOf<UUserWidget> GeneralUI;
 
 private:
-
-	UPROPERTY()
-	ACameraActor* CameraActor;
 	
 	UPROPERTY()
 	UUserWidget* GeneralUIWidget;
 
 	UPROPERTY()
+	UTextBlock* CameraDistanceText;
+	UPROPERTY()
 	UTextBlock* GridAsSquareText;
-
+	UPROPERTY()
+	UTextBlock* MineCountText;
+	
+	UFUNCTION()
+	void CameraDistanceSliderValueChanged(float Value);
 	UFUNCTION()
 	void GridAsSquareSliderValueChanged(float Value);
+	UFUNCTION()
+	void MineCountSliderValueChanged(float Value);
 };
