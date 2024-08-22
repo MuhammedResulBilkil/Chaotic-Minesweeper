@@ -18,26 +18,4 @@ class MINESWEEPER_API AGameModeManager : public AGameModeBase
 public:
 	
 	virtual void BeginPlay() override;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
-	TSubclassOf<UUserWidget> GeneralUI;
-
-private:
-	
-	UPROPERTY()
-	UUserWidget* GeneralUIWidget;
-
-	UPROPERTY()
-	UTextBlock* CameraDistanceText;
-	UPROPERTY()
-	UTextBlock* GridAsSquareText;
-	UPROPERTY()
-	UTextBlock* MineCountText;
-	
-	UFUNCTION()
-	void CameraDistanceSliderValueChanged(float Value);
-	UFUNCTION()
-	void GridAsSquareSliderValueChanged(float Value);
-	UFUNCTION()
-	void MineCountSliderValueChanged(float Value);
 };

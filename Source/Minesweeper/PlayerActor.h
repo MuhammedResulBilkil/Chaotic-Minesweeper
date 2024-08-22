@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "BP_Player.generated.h"
+#include "PlayerActor.generated.h"
 
 UCLASS()
-class MINESWEEPER_API ABP_Player : public APawn
+class MINESWEEPER_API APlayerActor : public APawn
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this pawn's properties
-	ABP_Player();
+	APlayerActor();
 
 protected:
 	// Called when the game starts or when spawned

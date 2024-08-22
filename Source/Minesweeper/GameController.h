@@ -6,6 +6,11 @@
 #include "GameFramework/Actor.h"
 #include "GameController.generated.h"
 
+class UTextBlock;
+class USpringArmComponent;
+class UCameraComponent;
+class AMainCameraActor;
+
 UCLASS()
 class MINESWEEPER_API AGameController : public AActor
 {
@@ -15,8 +20,11 @@ public:
 	// Sets default values for this actor's properties
 	AGameController();
 
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Camera")
-	ACameraActor* MainCameraActor;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<UUserWidget> GeneralUI;
+	
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Camera")
+	AMainCameraActor* MainCameraActor;
 
 protected:
 	// Called when the game starts or when spawned
@@ -26,4 +34,22 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+private:
+
+	UPROPERTY()
+	UUserWidget* GeneralUIWidget;
+
+	UPROPERTY()
+	UTextBlock* CameraDistanceText;
+	UPROPERTY()
+	UTextBlock* GridAsSquareText;
+	UPROPERTY()
+	UTextBlock* MineCountText;
+	
+	UFUNCTION()
+	void CameraDistanceSliderValueChanged(float Value);
+	UFUNCTION()
+	void GridAsSquareSliderValueChanged(float Value);
+	UFUNCTION()
+	void MineCountSliderValueChanged(float Value);
 };
