@@ -4,6 +4,7 @@
 #include "GameController.h"
 
 #include "MainCameraActor.h"
+#include "MinesweeperGrid.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Slider.h"
 #include "Components/TextBlock.h"
@@ -22,31 +23,13 @@ void AGameController::BeginPlay()
 	
 	GetWorld()->GetFirstPlayerController()->SetViewTargetWithBlend(MainCameraActor, 0);
 
-	//Create viewport
-	if (GeneralUI)
-	{
-		GeneralUIWidget = CreateWidget<UUserWidget>(GetWorld(), GeneralUI);
-		
-		if (GeneralUIWidget)
-		{
-			USlider* CameraDistanceSlider = (USlider*) GeneralUIWidget->GetWidgetFromName(TEXT("Slider_CameraDistance"));
-			CameraDistanceText = (UTextBlock*) GeneralUIWidget->GetWidgetFromName(TEXT("Text_CameraDistance"));
-			USlider* GridAsSquareSlider = (USlider*) GeneralUIWidget->GetWidgetFromName(TEXT("Slider_GridAsSquare"));
-			GridAsSquareText = (UTextBlock*) GeneralUIWidget->GetWidgetFromName(TEXT("Text_GridAsSquare"));
-			USlider* MineCountSlider = (USlider*) GeneralUIWidget->GetWidgetFromName(TEXT("Slider_MineCount"));
-			MineCountText = (UTextBlock*) GeneralUIWidget->GetWidgetFromName(TEXT("Text_MineCount"));
-			
-			if(CameraDistanceSlider)
-				CameraDistanceSlider->OnValueChanged.AddDynamic(this, &AGameController::CameraDistanceSliderValueChanged);
-			
-			if(GridAsSquareSlider)
-				GridAsSquareSlider->OnValueChanged.AddDynamic(this, &AGameController::GridAsSquareSliderValueChanged);
+	CreateGeneralUI();
 
-			if(MineCountSlider)
-				MineCountSlider->OnValueChanged.AddDynamic(this, &AGameController::MineCountSliderValueChanged);
-			
-			GeneralUIWidget->AddToViewport();
-		}
+	MinesweeperGrid->GridStartLocation = GridStartLocation;
+
+	if(MinesweeperGrid->GridStartLocation)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("GridStartLocation: %s"), *MinesweeperGrid->GridStartLocation->GetActorLocation().ToString());
 	}
 }
 
@@ -80,5 +63,35 @@ void AGameController::MineCountSliderValueChanged(float Value)
 	UE_LOG(LogTemp, Warning, TEXT("MineCountSliderValueChanged: %f"), Value);
 
 	MineCountText->SetText(FText::FromString(FString::Printf(TEXT("Mine Count: %d"), (int)Value)));
+}
+
+void AGameController::CreateGeneralUI()
+{
+	//Create viewport
+	if (GeneralUI)
+	{
+		GeneralUIWidget = CreateWidget<UUserWidget>(GetWorld(), GeneralUI);
+		
+		if (GeneralUIWidget)
+		{
+			USlider* CameraDistanceSlider = (USlider*) GeneralUIWidget->GetWidgetFromName(TEXT("Slider_CameraDistance"));
+			CameraDistanceText = (UTextBlock*) GeneralUIWidget->GetWidgetFromName(TEXT("Text_CameraDistance"));
+			USlider* GridAsSquareSlider = (USlider*) GeneralUIWidget->GetWidgetFromName(TEXT("Slider_GridAsSquare"));
+			GridAsSquareText = (UTextBlock*) GeneralUIWidget->GetWidgetFromName(TEXT("Text_GridAsSquare"));
+			USlider* MineCountSlider = (USlider*) GeneralUIWidget->GetWidgetFromName(TEXT("Slider_MineCount"));
+			MineCountText = (UTextBlock*) GeneralUIWidget->GetWidgetFromName(TEXT("Text_MineCount"));
+			
+			if(CameraDistanceSlider)
+				CameraDistanceSlider->OnValueChanged.AddDynamic(this, &AGameController::CameraDistanceSliderValueChanged);
+			
+			if(GridAsSquareSlider)
+				GridAsSquareSlider->OnValueChanged.AddDynamic(this, &AGameController::GridAsSquareSliderValueChanged);
+
+			if(MineCountSlider)
+				MineCountSlider->OnValueChanged.AddDynamic(this, &AGameController::MineCountSliderValueChanged);
+			
+			GeneralUIWidget->AddToViewport();
+		}
+	}
 }
 

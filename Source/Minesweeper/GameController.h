@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "GameController.generated.h"
 
+class UMinesweeperGrid;
 class UTextBlock;
 class USpringArmComponent;
 class UCameraComponent;
@@ -19,12 +20,19 @@ class MINESWEEPER_API AGameController : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AGameController();
+	void CreateGeneralUI();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<UUserWidget> GeneralUI;
 	
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Camera")
 	AMainCameraActor* MainCameraActor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Grid")
+	UMinesweeperGrid* MinesweeperGrid;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Grid")
+	AActor* GridStartLocation;
 
 protected:
 	// Called when the game starts or when spawned
