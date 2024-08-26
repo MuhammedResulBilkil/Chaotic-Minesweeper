@@ -25,4 +25,7 @@ public:
 	AActor* GridStartLocation;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid")
 	TArray<FVector> GridCenterPosses;
+
+	UFUNCTION()
+	void GenerateGrid();
 };

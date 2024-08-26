@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "GameController.generated.h"
 
+class ACell;
 class UMinesweeperGrid;
 class UTextBlock;
 class USpringArmComponent;
@@ -20,6 +21,7 @@ class MINESWEEPER_API AGameController : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AGameController();
+	
 	void CreateGeneralUI();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
@@ -34,9 +36,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Grid")
 	AActor* GridStartLocation;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Cell")
+	TSubclassOf<ACell> Cell;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:	
 	// Called every frame

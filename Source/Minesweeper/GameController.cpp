@@ -3,6 +3,7 @@
 
 #include "GameController.h"
 
+#include "Cell.h"
 #include "MainCameraActor.h"
 #include "MinesweeperGrid.h"
 #include "Blueprint/UserWidget.h"
@@ -30,7 +31,29 @@ void AGameController::BeginPlay()
 	if(MinesweeperGrid->GridStartLocation)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("GridStartLocation: %s"), *MinesweeperGrid->GridStartLocation->GetActorLocation().ToString());
+
+		MinesweeperGrid->GenerateGrid();
+
+		int32 index = 0;
+		
+		for (FVector GridCenterPoss : MinesweeperGrid->GridCenterPosses)
+		{
+			ACell* spawnedCell = GetWorld()->SpawnActor<ACell>(Cell, GridCenterPoss, FRotator::ZeroRotator);
+			spawnedCell->SetActorLabel(FString::Printf(TEXT("Cell_%d"), index));
+			spawnedCell->AttachToActor(MinesweeperGrid->GridStartLocation, FAttachmentTransformRules::KeepWorldTransform);
+
+			index++;
+		}
 	}
+}
+
+void AGameController::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	
+	UE_LOG(LogTemp, Warning, TEXT("EndPlay: %d"), EndPlayReason);
+
+	MinesweeperGrid->GridCenterPosses.Empty();
 }
 
 // Called every frame
