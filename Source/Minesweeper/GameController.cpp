@@ -9,6 +9,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/Slider.h"
 #include "Components/TextBlock.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AGameController::AGameController()
@@ -21,7 +22,9 @@ AGameController::AGameController()
 void AGameController::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	UE_LOG(LogTemp, Warning, TEXT("GameController BeginPlay"));
+		
 	GetWorld()->GetFirstPlayerController()->SetViewTargetWithBlend(MainCameraActor, 0);
 
 	CreateGeneralUI();
