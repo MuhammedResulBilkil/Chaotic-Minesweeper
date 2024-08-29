@@ -5,6 +5,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "KismetTraceUtils.h"
 
 // Sets default values
 APlayerActor::APlayerActor()
@@ -48,5 +49,25 @@ void APlayerActor::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 void APlayerActor::OnMouseLeftButtonReleased()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Mouse Left Button Released!"));
+
+	FVector WorldLocation;
+	FVector WorldDirection;
+	
+	GetWorld()->GetFirstPlayerController()->DeprojectMousePositionToWorld(WorldLocation, WorldDirection);
+
+	//UE_LOG(LogTemp, Warning, TEXT("WorldLocation: %s"), *WorldLocation.ToString());
+	//UE_LOG(LogTemp, Warning, TEXT("WorldDirection: %s"), *WorldDirection.ToString());
+
+	FHitResult HitResult;
+	
+	GetWorld()->LineTraceSingleByChannel(HitResult, WorldLocation, WorldLocation + WorldDirection * 10000, ECC_Visibility);
+
+	//DrawDebugLine(GetWorld(), WorldLocation, WorldLocation + WorldDirection * 10000, FColor::Red, false, 5, 0, 1);
+
+	if (HitResult.bBlockingHit)
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("HitResult: %s"), *HitResult.ImpactPoint.ToString());
+		//UE_LOG(LogTemp, Warning, TEXT("HitResult Actor Name: %s"), *HitResult.GetActor()->GetActorLabel());
+	}
 }
 
