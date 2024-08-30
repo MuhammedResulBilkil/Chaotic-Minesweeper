@@ -21,7 +21,11 @@ class MINESWEEPER_API AGameController : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AGameController();
-	
+	void SetNestedCellsSize();
+	void SpawnCells();
+	void FillNestedCells();
+	void AllocateMines();
+
 	void CreateGeneralUI();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
@@ -44,6 +48,9 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Cell")
+	int32 TotalEmptyCells;
 
 public:	
 	// Called every frame

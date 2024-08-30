@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "MinesweeperGrid.generated.h"
 
+class ACell;
 /**
  * 
  */
@@ -20,13 +21,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid")
 	int32 Height;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid")
+	int32 MineCount;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid")
 	float CellSize;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid")
 	AActor* GridStartLocation;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid")
 	TArray<FVector> GridCenterPosses;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid")
-	TArray<AActor*> Cells;
+	TArray<ACell*> Cells;
+
+	TArray<TArray<ACell*>> NestedCells;
 
 	UFUNCTION()
 	void GenerateGrid();

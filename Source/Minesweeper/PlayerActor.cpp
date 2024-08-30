@@ -3,6 +3,7 @@
 
 #include "PlayerActor.h"
 
+#include "Cell.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "KismetTraceUtils.h"
@@ -67,7 +68,17 @@ void APlayerActor::OnMouseLeftButtonReleased()
 	if (HitResult.bBlockingHit)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("HitResult: %s"), *HitResult.ImpactPoint.ToString());
-		//UE_LOG(LogTemp, Warning, TEXT("HitResult Actor Name: %s"), *HitResult.GetActor()->GetActorLabel());
+		UE_LOG(LogTemp, Warning, TEXT("HitResult Actor Name: %s"), *HitResult.GetActor()->GetActorLabel());
+		
+		ACell* Cell = Cast<ACell>(HitResult.GetActor());
+		
+		if(Cell)
+		{
+			UEnum* EnumPtr = StaticEnum<ECellType>();
+			FString CellTypeName = EnumPtr->GetNameByValue(Cell->CellType.GetValue()).ToString();
+			
+			UE_LOG(LogTemp, Warning, TEXT("CellType: %s"), *CellTypeName);
+		}
 	}
 }
 
