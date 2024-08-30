@@ -45,6 +45,8 @@ void AGameController::BeginPlay()
 			spawnedCell->SetActorLabel(FString::Printf(TEXT("Cell_%d"), index));
 			spawnedCell->AttachToActor(MinesweeperGrid->GridStartLocation, FAttachmentTransformRules::KeepWorldTransform);
 
+			MinesweeperGrid->Cells.Add(spawnedCell);
+
 			index++;
 		}
 	}
@@ -57,6 +59,7 @@ void AGameController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	UE_LOG(LogTemp, Warning, TEXT("EndPlay: %d"), EndPlayReason);
 
 	MinesweeperGrid->GridCenterPosses.Empty();
+	MinesweeperGrid->Cells.Empty();
 }
 
 // Called every frame
