@@ -78,6 +78,9 @@ void APlayerActor::OnMouseLeftButtonReleased()
 			FString CellTypeName = EnumPtr->GetNameByValue(Cell->CellType.GetValue()).ToString();
 			
 			UE_LOG(LogTemp, Warning, TEXT("CellType: %s"), *CellTypeName);
+
+			if(Cell->GetCellWidget())
+				UE_LOG(LogTemp, Warning, TEXT("CellWidget:"));
 		}
 	}
 }

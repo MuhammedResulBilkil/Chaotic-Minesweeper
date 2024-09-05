@@ -3,6 +3,9 @@
 
 #include "Cell.h"
 
+#include "CellWidget.h"
+#include "Components/WidgetComponent.h"
+
 // Sets default values
 ACell::ACell()
 {
@@ -23,5 +26,21 @@ void ACell::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+UCellWidget* ACell::GetCellWidget()
+{
+	UWidgetComponent* WidgetComponent = Cast<UWidgetComponent>(CellWidgetComponent->GetDefaultObject());
+	
+	if(WidgetComponent)
+		UE_LOG(LogTemp, Warning, TEXT("WidgetComponent is not null"));
+	
+	if(WidgetComponent->GetWidgetClass())
+		UE_LOG(LogTemp, Warning, TEXT("WidgetComponent->GetWidgetClass() is not null"));
+
+	if(WidgetComponent->GetUserWidgetObject())
+		UE_LOG(LogTemp, Warning, TEXT("WidgetComponent->GetUserWidgetObject() is not null"));
+	
+	return Cast<UCellWidget>(WidgetComponent->GetUserWidgetObject());
 }
 

@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "CellType.h"
+#include "CellWidget.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/Actor.h"
 #include "Cell.generated.h"
 
@@ -23,7 +25,9 @@ public:
 	int32 GridIndexX;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Cell")
 	int32 GridIndexY;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="CellWidget")
+	TSubclassOf<UWidgetComponent> CellWidgetComponent;
 
 protected:
 	// Called when the game starts or when spawned
@@ -32,5 +36,5 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	UCellWidget* GetCellWidget();
 };
