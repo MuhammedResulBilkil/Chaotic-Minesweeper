@@ -27,7 +27,7 @@ public:
 	int32 GridIndexY;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="CellWidget")
-	TSubclassOf<UWidgetComponent> CellWidgetComponent;
+	TObjectPtr<UWidgetComponent> CellWidgetComponent;
 
 protected:
 	// Called when the game starts or when spawned
