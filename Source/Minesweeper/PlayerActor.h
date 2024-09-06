@@ -24,6 +24,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Input")
 	UInputAction* MouseLeftButtonReleasedAction;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Input")
+	UInputAction* MouseRightButtonReleasedAction;
 	
 protected:
 	// Called when the game starts or when spawned
@@ -32,13 +35,15 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	
+
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	void LineTraceFromMousePosition(FHitResult& HitResult);
 
 private:
 
 	UFUNCTION()
 	void OnMouseLeftButtonReleased();
-
+	UFUNCTION()
+	void OnMouseRightButtonReleased();
 };

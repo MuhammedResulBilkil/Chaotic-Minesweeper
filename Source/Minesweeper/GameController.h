@@ -59,14 +59,14 @@ public:
 private:
 
 	UPROPERTY()
-	UUserWidget* GeneralUIWidget;
+	TObjectPtr<UUserWidget> GeneralUIWidget;
 
 	UPROPERTY()
-	UTextBlock* CameraDistanceText;
+	TObjectPtr<UTextBlock> CameraDistanceText;
 	UPROPERTY()
-	UTextBlock* GridAsSquareText;
+	TObjectPtr<UTextBlock> GridAsSquareText;
 	UPROPERTY()
-	UTextBlock* MineCountText;
+	TObjectPtr<UTextBlock> MineCountText;
 	
 	UFUNCTION()
 	void CameraDistanceSliderValueChanged(float Value);

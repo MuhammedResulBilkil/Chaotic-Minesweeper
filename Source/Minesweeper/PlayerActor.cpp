@@ -45,12 +45,11 @@ void APlayerActor::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 
 	EnhancedInputComponent->BindAction(MouseLeftButtonReleasedAction, ETriggerEvent::Triggered, this, &APlayerActor::OnMouseLeftButtonReleased);
+	EnhancedInputComponent->BindAction(MouseRightButtonReleasedAction, ETriggerEvent::Triggered, this, &APlayerActor::OnMouseRightButtonReleased);
 }
 
-void APlayerActor::OnMouseLeftButtonReleased()
+void APlayerActor::LineTraceFromMousePosition(FHitResult& HitResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Mouse Left Button Released!"));
-
 	FVector WorldLocation;
 	FVector WorldDirection;
 	
@@ -59,11 +58,17 @@ void APlayerActor::OnMouseLeftButtonReleased()
 	//UE_LOG(LogTemp, Warning, TEXT("WorldLocation: %s"), *WorldLocation.ToString());
 	//UE_LOG(LogTemp, Warning, TEXT("WorldDirection: %s"), *WorldDirection.ToString());
 
-	FHitResult HitResult;
-	
 	GetWorld()->LineTraceSingleByChannel(HitResult, WorldLocation, WorldLocation + WorldDirection * 10000, ECC_Visibility);
 
 	//DrawDebugLine(GetWorld(), WorldLocation, WorldLocation + WorldDirection * 10000, FColor::Red, false, 5, 0, 1);
+}
+
+void APlayerActor::OnMouseLeftButtonReleased()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Mouse Left Button Released!"));
+
+	FHitResult HitResult;
+	LineTraceFromMousePosition(HitResult);
 
 	if (HitResult.bBlockingHit)
 	{
@@ -82,6 +87,23 @@ void APlayerActor::OnMouseLeftButtonReleased()
 			if(Cell->GetCellWidget())
 				UE_LOG(LogTemp, Warning, TEXT("CellWidget:"));
 		}
+	}
+}
+
+void APlayerActor::OnMouseRightButtonReleased()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Mouse Right Button Released!"));
+	
+	FHitResult HitResult;
+	LineTraceFromMousePosition(HitResult);
+
+	if (HitResult.bBlockingHit)
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("HitResult: %s"), *HitResult.ImpactPoint.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("HitResult Actor Name: %s"), *HitResult.GetActor()->GetActorLabel());
+
+		if(ACell* Cell = Cast<ACell>(HitResult.GetActor()))
+			Cell->ShowMark();
 	}
 }
 

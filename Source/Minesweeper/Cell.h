@@ -9,6 +9,8 @@
 #include "GameFramework/Actor.h"
 #include "Cell.generated.h"
 
+class UImage;
+
 UCLASS()
 class MINESWEEPER_API ACell : public AActor
 {
@@ -36,5 +38,17 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	
 	UCellWidget* GetCellWidget();
+
+	void ShowMark();
+
+private:
+	
+	bool bIsMarkOn;
+
+	UPROPERTY()
+	TObjectPtr<UImage> FlagImage;
+	UPROPERTY()
+	TObjectPtr<UImage> MineImage;
 };
