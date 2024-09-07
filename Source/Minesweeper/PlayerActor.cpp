@@ -95,9 +95,8 @@ void APlayerActor::OnMouseLeftButtonReleased()
 		UE_LOG(LogTemp, Warning, TEXT("HitResult Actor Name: %s"), *HitResult.GetActor()->GetActorLabel());
 		
 		if (IsLineTraceHitCell(HitResult, &CellActor))
-		{
-			
-		}
+			if(CellActor->CellType != ECT_Revealed)
+				CellActor->Reveal();
 	}
 }
 
@@ -116,7 +115,8 @@ void APlayerActor::OnMouseRightButtonReleased()
 		UE_LOG(LogTemp, Warning, TEXT("HitResult Actor Name: %s"), *HitResult.GetActor()->GetActorLabel());
 
 		if (IsLineTraceHitCell(HitResult, &CellActor))
-			CellActor->ShowMark();
+			if (CellActor->CellType != ECT_Revealed)
+				CellActor->ShowMark();
 	}
 }
 

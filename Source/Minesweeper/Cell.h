@@ -31,6 +31,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="CellWidget")
 	TObjectPtr<UWidgetComponent> CellWidgetComponent;
 
+	void Reveal();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -38,17 +40,17 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	
+
 	UCellWidget* GetCellWidget();
 
 	void ShowMark();
 
 private:
-	
-	bool bIsMarkOn;
 
 	UPROPERTY()
 	TObjectPtr<UImage> FlagImage;
 	UPROPERTY()
 	TObjectPtr<UImage> MineImage;
+	
+	bool bIsMarkOn;
 };

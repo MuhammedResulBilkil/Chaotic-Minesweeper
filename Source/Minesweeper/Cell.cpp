@@ -35,6 +35,11 @@ void ACell::Tick(float DeltaTime)
 
 }
 
+void ACell::Reveal()
+{
+	
+}
+
 UCellWidget* ACell::GetCellWidget()
 {	
 	return Cast<UCellWidget>(CellWidgetComponent->GetUserWidgetObject());
