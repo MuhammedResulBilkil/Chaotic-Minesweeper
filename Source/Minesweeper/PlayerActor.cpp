@@ -63,11 +63,30 @@ void APlayerActor::LineTraceFromMousePosition(FHitResult& HitResult)
 	//DrawDebugLine(GetWorld(), WorldLocation, WorldLocation + WorldDirection * 10000, FColor::Red, false, 5, 0, 1);
 }
 
+bool APlayerActor::IsLineTraceHitCell(FHitResult& HitResult, ACell** CellActor)
+{
+	if(ACell* Cell = Cast<ACell>(HitResult.GetActor()))
+	{
+		UEnum* EnumPtr = StaticEnum<ECellType>();
+		FString CellTypeName = EnumPtr->GetNameByValue(Cell->CellType.GetValue()).ToString();
+			
+		UE_LOG(LogTemp, Warning, TEXT("CellType: %s"), *CellTypeName);
+
+		*CellActor = Cell;
+			
+		return true;
+	}
+
+	return false;
+}
+
 void APlayerActor::OnMouseLeftButtonReleased()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Mouse Left Button Released!"));
 
 	FHitResult HitResult;
+	ACell* CellActor = nullptr;
+	
 	LineTraceFromMousePosition(HitResult);
 
 	if (HitResult.bBlockingHit)
@@ -75,17 +94,9 @@ void APlayerActor::OnMouseLeftButtonReleased()
 		//UE_LOG(LogTemp, Warning, TEXT("HitResult: %s"), *HitResult.ImpactPoint.ToString());
 		UE_LOG(LogTemp, Warning, TEXT("HitResult Actor Name: %s"), *HitResult.GetActor()->GetActorLabel());
 		
-		ACell* Cell = Cast<ACell>(HitResult.GetActor());
-		
-		if(Cell)
+		if (IsLineTraceHitCell(HitResult, &CellActor))
 		{
-			UEnum* EnumPtr = StaticEnum<ECellType>();
-			FString CellTypeName = EnumPtr->GetNameByValue(Cell->CellType.GetValue()).ToString();
 			
-			UE_LOG(LogTemp, Warning, TEXT("CellType: %s"), *CellTypeName);
-
-			if(Cell->GetCellWidget())
-				UE_LOG(LogTemp, Warning, TEXT("CellWidget:"));
 		}
 	}
 }
@@ -95,6 +106,8 @@ void APlayerActor::OnMouseRightButtonReleased()
 	UE_LOG(LogTemp, Warning, TEXT("Mouse Right Button Released!"));
 	
 	FHitResult HitResult;
+	ACell* CellActor = nullptr;
+	
 	LineTraceFromMousePosition(HitResult);
 
 	if (HitResult.bBlockingHit)
@@ -102,8 +115,8 @@ void APlayerActor::OnMouseRightButtonReleased()
 		//UE_LOG(LogTemp, Warning, TEXT("HitResult: %s"), *HitResult.ImpactPoint.ToString());
 		UE_LOG(LogTemp, Warning, TEXT("HitResult Actor Name: %s"), *HitResult.GetActor()->GetActorLabel());
 
-		if(ACell* Cell = Cast<ACell>(HitResult.GetActor()))
-			Cell->ShowMark();
+		if (IsLineTraceHitCell(HitResult, &CellActor))
+			CellActor->ShowMark();
 	}
 }
 

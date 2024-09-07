@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Cell.h"
 #include "GameFramework/Pawn.h"
 #include "PlayerActor.generated.h"
 
@@ -38,12 +39,14 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	void LineTraceFromMousePosition(FHitResult& HitResult);
-
+	
 private:
 
 	UFUNCTION()
 	void OnMouseLeftButtonReleased();
 	UFUNCTION()
 	void OnMouseRightButtonReleased();
+
+	void LineTraceFromMousePosition(FHitResult& HitResult);
+	bool IsLineTraceHitCell(FHitResult& HitResult, ACell** CellActor);
 };
