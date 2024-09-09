@@ -6,8 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "GameController.generated.h"
 
+class UGameDataAsset;
 class ACell;
-class UMinesweeperGrid;
+class UMinesweeperGridDataAsset;
 class UTextBlock;
 class USpringArmComponent;
 class UCameraComponent;
@@ -34,23 +35,23 @@ public:
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Camera")
 	AMainCameraActor* MainCameraActor;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Grid")
-	UMinesweeperGrid* MinesweeperGrid;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Grid")
+	UMinesweeperGridDataAsset* MinesweeperGridDataAsset;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Grid")
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Grid")
 	AActor* GridStartLocation;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Cell")
 	TSubclassOf<ACell> Cell;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Game")
+	UGameDataAsset* GameDataAsset;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Cell")
-	int32 TotalEmptyCells;
 
 public:	
 	// Called every frame

@@ -7,6 +7,7 @@
 #include "GameFramework/Pawn.h"
 #include "PlayerActor.generated.h"
 
+class UGameDataAsset;
 class AGameController;
 class UInputMappingContext;
 class UInputAction;
@@ -32,6 +33,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game")
+	UGameDataAsset* GameDataAsset;
 
 public:	
 	// Called every frame

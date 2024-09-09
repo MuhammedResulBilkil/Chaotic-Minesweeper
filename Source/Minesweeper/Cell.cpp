@@ -40,9 +40,7 @@ void ACell::Tick(float DeltaTime)
 
 void ACell::Reveal()
 {
-	if(CellType != ECT_Mine)
-		CellMaterialInstanceDynamic->SetVectorParameterValue("BaseColor", FLinearColor::Green);
-	else
+	if(CellType == ECT_Mine)
 	{
 		CellMaterialInstanceDynamic->SetVectorParameterValue("BaseColor", FLinearColor::Red);
 		MineImage->SetVisibility(ESlateVisibility::Visible);

@@ -6,6 +6,7 @@
 #include "Cell.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameDataAsset.h"
 #include "KismetTraceUtils.h"
 
 // Sets default values
@@ -82,6 +83,9 @@ bool APlayerActor::IsLineTraceHitCell(FHitResult& HitResult, ACell** CellActor)
 
 void APlayerActor::OnMouseLeftButtonReleased()
 {
+	if(GameDataAsset->bIsGameOver)
+		return;
+	
 	UE_LOG(LogTemp, Warning, TEXT("Mouse Left Button Released!"));
 
 	FHitResult HitResult;
@@ -102,6 +106,9 @@ void APlayerActor::OnMouseLeftButtonReleased()
 
 void APlayerActor::OnMouseRightButtonReleased()
 {
+	if(GameDataAsset->bIsGameOver)
+		return;
+	
 	UE_LOG(LogTemp, Warning, TEXT("Mouse Right Button Released!"));
 	
 	FHitResult HitResult;

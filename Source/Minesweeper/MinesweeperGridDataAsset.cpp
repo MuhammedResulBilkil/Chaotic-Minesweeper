@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MinesweeperGrid.h"
+#include "MinesweeperGridDataAsset.h"
 
-void UMinesweeperGrid::GenerateGrid()
+void UMinesweeperGridDataAsset::GenerateGrid()
 {
 	GridCenterPosses.Empty();
 	
@@ -15,4 +15,12 @@ void UMinesweeperGrid::GenerateGrid()
 			GridCenterPosses.Add(CellLocation);
 		}
 	}
+}
+
+void UMinesweeperGridDataAsset::Reset()
+{
+	GridStartLocation = nullptr;
+	GridCenterPosses.Empty();
+	Cells.Empty();
+	NestedCells.Empty();
 }

@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "MinesweeperGrid.generated.h"
+#include "MinesweeperGridDataAsset.generated.h"
 
 class ACell;
 /**
  * 
  */
 UCLASS()
-class MINESWEEPER_API UMinesweeperGrid : public UDataAsset
+class MINESWEEPER_API UMinesweeperGridDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
 	
@@ -24,15 +24,16 @@ public:
 	int32 MineCount;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid")
 	float CellSize;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Grid")
 	AActor* GridStartLocation;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Grid")
 	TArray<FVector> GridCenterPosses;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Grid")
 	TArray<ACell*> Cells;
 
 	TArray<TArray<ACell*>> NestedCells;
 
-	UFUNCTION()
 	void GenerateGrid();
+
+	void Reset();
 };

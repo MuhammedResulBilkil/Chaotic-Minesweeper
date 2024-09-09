@@ -4,8 +4,9 @@
 #include "GameController.h"
 
 #include "Cell.h"
+#include "GameDataAsset.h"
 #include "MainCameraActor.h"
-#include "MinesweeperGrid.h"
+#include "MinesweeperGridDataAsset.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Slider.h"
 #include "Components/TextBlock.h"
@@ -23,18 +24,21 @@ void AGameController::BeginPlay()
 	Super::BeginPlay();
 
 	UE_LOG(LogTemp, Warning, TEXT("GameController BeginPlay"));
+
+	GameDataAsset->Reset();
+	MinesweeperGridDataAsset->Reset();
 		
 	GetWorld()->GetFirstPlayerController()->SetViewTargetWithBlend(MainCameraActor, 0);
 
 	CreateGeneralUI();
 
-	MinesweeperGrid->GridStartLocation = GridStartLocation;
+	MinesweeperGridDataAsset->GridStartLocation = GridStartLocation;
 
-	if(MinesweeperGrid->GridStartLocation)
+	if(MinesweeperGridDataAsset->GridStartLocation)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("GridStartLocation: %s"), *MinesweeperGrid->GridStartLocation->GetActorLocation().ToString());
+		UE_LOG(LogTemp, Warning, TEXT("GridStartLocation: %s"), *MinesweeperGridDataAsset->GridStartLocation->GetActorLocation().ToString());
 
-		MinesweeperGrid->GenerateGrid();
+		MinesweeperGridDataAsset->GenerateGrid();
 
 		SpawnCells();
 
@@ -52,8 +56,8 @@ void AGameController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	
 	UE_LOG(LogTemp, Warning, TEXT("EndPlay: %d"), EndPlayReason);
 
-	MinesweeperGrid->GridCenterPosses.Empty();
-	MinesweeperGrid->Cells.Empty();
+	GameDataAsset->Reset();
+	MinesweeperGridDataAsset->Reset();
 }
 
 // Called every frame
@@ -64,61 +68,59 @@ void AGameController::Tick(float DeltaTime)
 }
 
 void AGameController::SpawnCells()
-{
-	MinesweeperGrid->Cells.Empty();
-	
+{	
 	int32 index = 0;
 		
-	for (FVector GridCenterPoss : MinesweeperGrid->GridCenterPosses)
+	for (FVector GridCenterPoss : MinesweeperGridDataAsset->GridCenterPosses)
 	{
 		ACell* spawnedCell = GetWorld()->SpawnActor<ACell>(Cell, GridCenterPoss, FRotator::ZeroRotator);
 		spawnedCell->SetActorLabel(FString::Printf(TEXT("Cell_%d"), index++));
-		spawnedCell->AttachToActor(MinesweeperGrid->GridStartLocation, FAttachmentTransformRules::KeepWorldTransform);
+		spawnedCell->AttachToActor(MinesweeperGridDataAsset->GridStartLocation, FAttachmentTransformRules::KeepWorldTransform);
 		spawnedCell->CellType = ECT_Empty;
 
-		MinesweeperGrid->Cells.Add(spawnedCell);
+		MinesweeperGridDataAsset->Cells.Add(spawnedCell);
 	}
 
-	TotalEmptyCells = MinesweeperGrid->Cells.Num();
+	GameDataAsset->TotalEmptyCells = MinesweeperGridDataAsset->Cells.Num();
 }
 
 void AGameController::SetNestedCellsSize()
-{
-	MinesweeperGrid->NestedCells.SetNum(MinesweeperGrid->Width);
+{	
+	MinesweeperGridDataAsset->NestedCells.SetNum(MinesweeperGridDataAsset->Width);
 		
-	for (int32 i = 0; i < MinesweeperGrid->Width; i++)
-		MinesweeperGrid->NestedCells[i].SetNum(MinesweeperGrid->Height);
+	for (int32 i = 0; i < MinesweeperGridDataAsset->Width; i++)
+		MinesweeperGridDataAsset->NestedCells[i].SetNum(MinesweeperGridDataAsset->Height);
 }
 
 void AGameController::FillNestedCells()
 {
 	int32 index = 0;
 
-	for (int32 i = 0; i < MinesweeperGrid->NestedCells.Num(); i++)
+	for (int32 i = 0; i < MinesweeperGridDataAsset->NestedCells.Num(); i++)
 	{
-		int32 k = MinesweeperGrid->NestedCells[i].Num();
+		int32 k = MinesweeperGridDataAsset->NestedCells[i].Num();
 			
 		for (int32 j = 0; j < k; j++)
 		{
-			MinesweeperGrid->NestedCells[i][j] = MinesweeperGrid->Cells[index++];
-			MinesweeperGrid->NestedCells[i][j]->GridIndexX = i;
-			MinesweeperGrid->NestedCells[i][j]->GridIndexY = j;
+			MinesweeperGridDataAsset->NestedCells[i][j] = MinesweeperGridDataAsset->Cells[index++];
+			MinesweeperGridDataAsset->NestedCells[i][j]->GridIndexX = i;
+			MinesweeperGridDataAsset->NestedCells[i][j]->GridIndexY = j;
 
-			UE_LOG(LogTemp, Warning, TEXT("NestedCells[%d][%d]: %s"), i, j, *MinesweeperGrid->NestedCells[i][j]->GetActorLabel());
+			UE_LOG(LogTemp, Warning, TEXT("NestedCells[%d][%d]: %s"), i, j, *MinesweeperGridDataAsset->NestedCells[i][j]->GetActorLabel());
 		}
 	}
 }
 
 void AGameController::AllocateMines()
 {
-	for (int32 i = 0; i < MinesweeperGrid->MineCount; i++)
+	for (int32 i = 0; i < MinesweeperGridDataAsset->MineCount; i++)
 	{
-		int32 j = FMath::RandRange(0, MinesweeperGrid->NestedCells.Num() - 1);
-		int32 k = FMath::RandRange(0, MinesweeperGrid->NestedCells[j].Num() - 1);
+		int32 j = FMath::RandRange(0, MinesweeperGridDataAsset->NestedCells.Num() - 1);
+		int32 k = FMath::RandRange(0, MinesweeperGridDataAsset->NestedCells[j].Num() - 1);
 
-		MinesweeperGrid->NestedCells[j][k]->CellType = ECT_Mine;
+		MinesweeperGridDataAsset->NestedCells[j][k]->CellType = ECT_Mine;
 
-		TotalEmptyCells--;
+		GameDataAsset->TotalEmptyCells--;
 	}
 }
 
