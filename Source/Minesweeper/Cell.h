@@ -28,9 +28,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Cell")
 	int32 GridIndexY;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="CellWidget")
-	TObjectPtr<UWidgetComponent> CellWidgetComponent;
-
 	void Reveal();
 
 protected:
@@ -47,6 +44,13 @@ public:
 
 private:
 
+	UPROPERTY()
+	TObjectPtr<UWidgetComponent> CellWidgetComponent;
+	UPROPERTY()
+	TObjectPtr<UStaticMeshComponent> CellStaticMeshComponent;
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> CellMaterialInstanceDynamic;
+	
 	UPROPERTY()
 	TObjectPtr<UImage> FlagImage;
 	UPROPERTY()

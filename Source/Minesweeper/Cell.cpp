@@ -19,8 +19,11 @@ ACell::ACell()
 void ACell::BeginPlay()
 {
 	Super::BeginPlay();
-
-	//find cell widget component
+	
+	CellStaticMeshComponent = FindComponentByClass<UStaticMeshComponent>();
+	CellMaterialInstanceDynamic = CellStaticMeshComponent->
+	CreateAndSetMaterialInstanceDynamicFromMaterial(0, CellStaticMeshComponent->GetMaterial(0));
+	
 	CellWidgetComponent = FindComponentByClass<UWidgetComponent>();
 	CellWidgetComponent->SetCastShadow(false);
 
@@ -37,7 +40,13 @@ void ACell::Tick(float DeltaTime)
 
 void ACell::Reveal()
 {
-	
+	if(CellType != ECT_Mine)
+		CellMaterialInstanceDynamic->SetVectorParameterValue("BaseColor", FLinearColor::Green);
+	else
+	{
+		CellMaterialInstanceDynamic->SetVectorParameterValue("BaseColor", FLinearColor::Red);
+		MineImage->SetVisibility(ESlateVisibility::Visible);
+	}
 }
 
 UCellWidget* ACell::GetCellWidget()
