@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "GameController.generated.h"
 
+class URichTextBlock;
 class UGameDataAsset;
 class ACell;
 class UMinesweeperGridDataAsset;
@@ -68,11 +69,20 @@ private:
 	TObjectPtr<UTextBlock> GridAsSquareText;
 	UPROPERTY()
 	TObjectPtr<UTextBlock> MineCountText;
+	UPROPERTY()
+	TObjectPtr<URichTextBlock> GameStatusText;
 	
 	UFUNCTION()
-	void CameraDistanceSliderValueChanged(float Value);
+	void OnCameraDistanceSliderValueChanged(float Value);
 	UFUNCTION()
-	void GridAsSquareSliderValueChanged(float Value);
+	void OnGridAsSquareSliderValueChanged(float Value);
 	UFUNCTION()
-	void MineCountSliderValueChanged(float Value);
+	void OnMineCountSliderValueChanged(float Value);
+	
+	UFUNCTION()
+	void OnMineClicked();
+	UFUNCTION()
+	void OnEmptyClicked();
+
+	void ShowGameStatusText(const char* Value);
 };

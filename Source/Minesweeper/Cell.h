@@ -11,6 +11,9 @@
 
 class UImage;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnMineClickedSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEmptyClickedSignature);
+
 UCLASS()
 class MINESWEEPER_API ACell : public AActor
 {
@@ -27,6 +30,11 @@ public:
 	int32 GridIndexX;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Cell")
 	int32 GridIndexY;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnMineClickedSignature MineClicked;
+	UPROPERTY(BlueprintAssignable)
+	FOnEmptyClickedSignature EmptyClicked;
 
 	void Reveal();
 

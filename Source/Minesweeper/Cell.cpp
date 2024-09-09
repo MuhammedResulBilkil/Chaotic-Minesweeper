@@ -44,6 +44,14 @@ void ACell::Reveal()
 	{
 		CellMaterialInstanceDynamic->SetVectorParameterValue("BaseColor", FLinearColor::Red);
 		MineImage->SetVisibility(ESlateVisibility::Visible);
+
+		MineClicked.Broadcast();
+	}
+	else if (CellType == ECT_Empty)
+	{
+		CellMaterialInstanceDynamic->SetVectorParameterValue("BaseColor", FLinearColor::Green);
+
+		EmptyClicked.Broadcast();
 	}
 }
 

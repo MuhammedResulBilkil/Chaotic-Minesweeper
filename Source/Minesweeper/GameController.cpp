@@ -8,6 +8,7 @@
 #include "MainCameraActor.h"
 #include "MinesweeperGridDataAsset.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/RichTextBlock.h"
 #include "Components/Slider.h"
 #include "Components/TextBlock.h"
 
@@ -77,6 +78,8 @@ void AGameController::SpawnCells()
 		spawnedCell->SetActorLabel(FString::Printf(TEXT("Cell_%d"), index++));
 		spawnedCell->AttachToActor(MinesweeperGridDataAsset->GridStartLocation, FAttachmentTransformRules::KeepWorldTransform);
 		spawnedCell->CellType = ECT_Empty;
+		spawnedCell->MineClicked.AddDynamic(this, &AGameController::OnMineClicked);
+		spawnedCell->EmptyClicked.AddDynamic(this, &AGameController::OnEmptyClicked);
 
 		MinesweeperGridDataAsset->Cells.Add(spawnedCell);
 	}
@@ -124,7 +127,7 @@ void AGameController::AllocateMines()
 	}
 }
 
-void AGameController::CameraDistanceSliderValueChanged(float Value)
+void AGameController::OnCameraDistanceSliderValueChanged(float Value)
 {
 	//log
 	UE_LOG(LogTemp, Warning, TEXT("CameraDistanceSliderValueChanged: %f"), Value);
@@ -133,7 +136,7 @@ void AGameController::CameraDistanceSliderValueChanged(float Value)
 	CameraDistanceText->SetText(FText::FromString(FString::Printf(TEXT("Camera Distance: %d"), (int)Value)));
 }
 
-void AGameController::GridAsSquareSliderValueChanged(float Value)
+void AGameController::OnGridAsSquareSliderValueChanged(float Value)
 {
 	//log
 	UE_LOG(LogTemp, Warning, TEXT("GridAsSquareSliderValueChanged: %f"), Value);
@@ -141,12 +144,35 @@ void AGameController::GridAsSquareSliderValueChanged(float Value)
 	GridAsSquareText->SetText(FText::FromString(FString::Printf(TEXT("Grid as Square: %d"), (int)Value)));
 }
 
-void AGameController::MineCountSliderValueChanged(float Value)
+void AGameController::OnMineCountSliderValueChanged(float Value)
 {
 	//log
 	UE_LOG(LogTemp, Warning, TEXT("MineCountSliderValueChanged: %f"), Value);
 
 	MineCountText->SetText(FText::FromString(FString::Printf(TEXT("Mine Count: %d"), (int)Value)));
+}
+
+void AGameController::OnMineClicked()
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnMineClicked - PlayerLost!"));
+		
+	GameDataAsset->bIsGameOver = true;
+	GameDataAsset->bIsPlayerWinner = false;
+
+	ShowGameStatusText("<Style.Bold>You Lost!</>");
+}
+
+void AGameController::OnEmptyClicked()
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnEmptyClicked"));
+
+	
+}
+
+void AGameController::ShowGameStatusText(const char* Value)
+{
+	GameStatusText->SetText(FText::FromString(Value));
+	GameStatusText->SetVisibility(ESlateVisibility::Visible);
 }
 
 void AGameController::CreateGeneralUI()
@@ -164,15 +190,16 @@ void AGameController::CreateGeneralUI()
 			GridAsSquareText = (UTextBlock*) GeneralUIWidget->GetWidgetFromName(TEXT("Text_GridAsSquare"));
 			USlider* MineCountSlider = (USlider*) GeneralUIWidget->GetWidgetFromName(TEXT("Slider_MineCount"));
 			MineCountText = (UTextBlock*) GeneralUIWidget->GetWidgetFromName(TEXT("Text_MineCount"));
+			GameStatusText = (URichTextBlock*) GeneralUIWidget->GetWidgetFromName(TEXT("RichText_GameStatus"));
 			
 			if(CameraDistanceSlider)
-				CameraDistanceSlider->OnValueChanged.AddDynamic(this, &AGameController::CameraDistanceSliderValueChanged);
+				CameraDistanceSlider->OnValueChanged.AddDynamic(this, &AGameController::OnCameraDistanceSliderValueChanged);
 			
 			if(GridAsSquareSlider)
-				GridAsSquareSlider->OnValueChanged.AddDynamic(this, &AGameController::GridAsSquareSliderValueChanged);
+				GridAsSquareSlider->OnValueChanged.AddDynamic(this, &AGameController::OnGridAsSquareSliderValueChanged);
 
 			if(MineCountSlider)
-				MineCountSlider->OnValueChanged.AddDynamic(this, &AGameController::MineCountSliderValueChanged);
+				MineCountSlider->OnValueChanged.AddDynamic(this, &AGameController::OnMineCountSliderValueChanged);
 			
 			GeneralUIWidget->AddToViewport();
 		}
