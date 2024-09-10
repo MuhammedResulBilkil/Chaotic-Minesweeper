@@ -45,8 +45,9 @@ void APlayerActor::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 
-	EnhancedInputComponent->BindAction(MouseLeftButtonReleasedAction, ETriggerEvent::Triggered, this, &APlayerActor::OnMouseLeftButtonReleased);
-	EnhancedInputComponent->BindAction(MouseRightButtonReleasedAction, ETriggerEvent::Triggered, this, &APlayerActor::OnMouseRightButtonReleased);
+	EnhancedInputComponent->BindAction(CellClickAction, ETriggerEvent::Triggered, this, &APlayerActor::OnCellClickAction);
+	EnhancedInputComponent->BindAction(CellMarkAction, ETriggerEvent::Triggered, this, &APlayerActor::OnCellMarkAction);
+	EnhancedInputComponent->BindAction(RestartAction, ETriggerEvent::Triggered, this, &APlayerActor::OnRestartAction);
 }
 
 void APlayerActor::LineTraceFromMousePosition(FHitResult& HitResult)
@@ -81,7 +82,7 @@ bool APlayerActor::IsLineTraceHitCell(FHitResult& HitResult, ACell** CellActor)
 	return false;
 }
 
-void APlayerActor::OnMouseLeftButtonReleased()
+void APlayerActor::OnCellClickAction()
 {
 	if(GameDataAsset->bIsGameOver)
 		return;
@@ -104,7 +105,7 @@ void APlayerActor::OnMouseLeftButtonReleased()
 	}
 }
 
-void APlayerActor::OnMouseRightButtonReleased()
+void APlayerActor::OnCellMarkAction()
 {
 	if(GameDataAsset->bIsGameOver)
 		return;
@@ -125,5 +126,12 @@ void APlayerActor::OnMouseRightButtonReleased()
 			if (CellActor->CellType != ECT_Revealed)
 				CellActor->ShowMark();
 	}
+}
+
+void APlayerActor::OnRestartAction()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Restart Action!"));
+	
+	GameDataAsset->RestartActionDelegate.Broadcast();
 }
 

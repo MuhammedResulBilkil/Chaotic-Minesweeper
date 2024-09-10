@@ -25,10 +25,13 @@ public:
 	UInputMappingContext* InputMapping;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Input")
-	UInputAction* MouseLeftButtonReleasedAction;
+	UInputAction* CellClickAction;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Input")
-	UInputAction* MouseRightButtonReleasedAction;
+	UInputAction* CellMarkAction;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Input")
+	UInputAction* RestartAction;
 	
 protected:
 	// Called when the game starts or when spawned
@@ -47,10 +50,12 @@ public:
 private:
 
 	UFUNCTION()
-	void OnMouseLeftButtonReleased();
+	void OnCellClickAction();
 	UFUNCTION()
-	void OnMouseRightButtonReleased();
-
+	void OnCellMarkAction();
+	UFUNCTION()
+	void OnRestartAction();
+	
 	void LineTraceFromMousePosition(FHitResult& HitResult);
 	bool IsLineTraceHitCell(FHitResult& HitResult, ACell** CellActor);
 };

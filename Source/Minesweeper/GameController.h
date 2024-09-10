@@ -71,6 +71,10 @@ private:
 	TObjectPtr<UTextBlock> MineCountText;
 	UPROPERTY()
 	TObjectPtr<URichTextBlock> GameStatusText;
+
+	int32 DefaultWidth;
+	int32 DefaultHeight;
+	int32 DefaultMineCount;
 	
 	UFUNCTION()
 	void OnCameraDistanceSliderValueChanged(float Value);
@@ -84,5 +88,10 @@ private:
 	UFUNCTION()
 	void OnEmptyClicked();
 
+	UFUNCTION()
+	void OnRestartAction();
+
+	void StartGeneratingMinesweeperGrid();
+	
 	void ShowGameStatusText(const char* Value);
 };

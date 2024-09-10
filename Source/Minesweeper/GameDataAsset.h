@@ -6,9 +6,8 @@
 #include "Engine/DataAsset.h"
 #include "GameDataAsset.generated.h"
 
-/**
- * 
- */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRestartActionSignature);
+
 UCLASS()
 class MINESWEEPER_API UGameDataAsset : public UDataAsset
 {
@@ -24,6 +23,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Cell")
 	int32 TotalEmptyCells;
+
+	UPROPERTY()
+	FOnRestartActionSignature RestartActionDelegate;
 
 	void Reset();
 };

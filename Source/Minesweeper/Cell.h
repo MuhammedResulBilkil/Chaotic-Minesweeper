@@ -32,9 +32,9 @@ public:
 	int32 GridIndexY;
 
 	UPROPERTY(BlueprintAssignable)
-	FOnMineClickedSignature MineClicked;
+	FOnMineClickedSignature MineClickedDelegate;
 	UPROPERTY(BlueprintAssignable)
-	FOnEmptyClickedSignature EmptyClicked;
+	FOnEmptyClickedSignature EmptyClickedDelegate;
 
 	void Reveal();
 

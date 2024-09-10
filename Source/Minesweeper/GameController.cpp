@@ -19,20 +19,8 @@ AGameController::AGameController()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
-// Called when the game starts or when spawned
-void AGameController::BeginPlay()
+void AGameController::StartGeneratingMinesweeperGrid()
 {
-	Super::BeginPlay();
-
-	UE_LOG(LogTemp, Warning, TEXT("GameController BeginPlay"));
-
-	GameDataAsset->Reset();
-	MinesweeperGridDataAsset->Reset();
-		
-	GetWorld()->GetFirstPlayerController()->SetViewTargetWithBlend(MainCameraActor, 0);
-
-	CreateGeneralUI();
-
 	MinesweeperGridDataAsset->GridStartLocation = GridStartLocation;
 
 	if(MinesweeperGridDataAsset->GridStartLocation)
@@ -51,11 +39,40 @@ void AGameController::BeginPlay()
 	}
 }
 
+// Called when the game starts or when spawned
+void AGameController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	UE_LOG(LogTemp, Warning, TEXT("GameController BeginPlay"));
+
+	GameDataAsset->RestartActionDelegate.AddDynamic(this, &AGameController::OnRestartAction);
+
+	DefaultWidth = MinesweeperGridDataAsset->Width;
+	DefaultHeight = MinesweeperGridDataAsset->Height;
+	DefaultMineCount = MinesweeperGridDataAsset->MineCount;
+
+	GameDataAsset->Reset();
+	MinesweeperGridDataAsset->Reset();
+		
+	GetWorld()->GetFirstPlayerController()->SetViewTargetWithBlend(MainCameraActor, 0);
+
+	CreateGeneralUI();
+
+	StartGeneratingMinesweeperGrid();
+}
+
 void AGameController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 	
-	UE_LOG(LogTemp, Warning, TEXT("EndPlay: %d"), EndPlayReason);
+	UE_LOG(LogTemp, Warning, TEXT("GameController EndPlay: %d"), EndPlayReason);
+
+	GameDataAsset->RestartActionDelegate.RemoveDynamic(this, &AGameController::OnRestartAction);
+
+	MinesweeperGridDataAsset->Width = DefaultWidth;
+	MinesweeperGridDataAsset->Height = DefaultHeight;
+	MinesweeperGridDataAsset->MineCount = DefaultMineCount;
 
 	GameDataAsset->Reset();
 	MinesweeperGridDataAsset->Reset();
@@ -78,8 +95,8 @@ void AGameController::SpawnCells()
 		spawnedCell->SetActorLabel(FString::Printf(TEXT("Cell_%d"), index++));
 		spawnedCell->AttachToActor(MinesweeperGridDataAsset->GridStartLocation, FAttachmentTransformRules::KeepWorldTransform);
 		spawnedCell->CellType = ECT_Empty;
-		spawnedCell->MineClicked.AddDynamic(this, &AGameController::OnMineClicked);
-		spawnedCell->EmptyClicked.AddDynamic(this, &AGameController::OnEmptyClicked);
+		spawnedCell->MineClickedDelegate.AddDynamic(this, &AGameController::OnMineClicked);
+		spawnedCell->EmptyClickedDelegate.AddDynamic(this, &AGameController::OnEmptyClicked);
 
 		MinesweeperGridDataAsset->Cells.Add(spawnedCell);
 	}
@@ -132,8 +149,9 @@ void AGameController::OnCameraDistanceSliderValueChanged(float Value)
 	//log
 	UE_LOG(LogTemp, Warning, TEXT("CameraDistanceSliderValueChanged: %f"), Value);
 
-	MainCameraActor->SetSpringArmLength(Value);
 	CameraDistanceText->SetText(FText::FromString(FString::Printf(TEXT("Camera Distance: %d"), (int)Value)));
+	
+	MainCameraActor->SetSpringArmLength(Value);
 }
 
 void AGameController::OnGridAsSquareSliderValueChanged(float Value)
@@ -142,6 +160,9 @@ void AGameController::OnGridAsSquareSliderValueChanged(float Value)
 	UE_LOG(LogTemp, Warning, TEXT("GridAsSquareSliderValueChanged: %f"), Value);
 
 	GridAsSquareText->SetText(FText::FromString(FString::Printf(TEXT("Grid as Square: %d"), (int)Value)));
+
+	MinesweeperGridDataAsset->Width = (int32) Value;
+	MinesweeperGridDataAsset->Height = (int32) Value;
 }
 
 void AGameController::OnMineCountSliderValueChanged(float Value)
@@ -150,6 +171,8 @@ void AGameController::OnMineCountSliderValueChanged(float Value)
 	UE_LOG(LogTemp, Warning, TEXT("MineCountSliderValueChanged: %f"), Value);
 
 	MineCountText->SetText(FText::FromString(FString::Printf(TEXT("Mine Count: %d"), (int)Value)));
+
+	MinesweeperGridDataAsset->MineCount = (int32) Value;
 }
 
 void AGameController::OnMineClicked()
@@ -167,6 +190,19 @@ void AGameController::OnEmptyClicked()
 	UE_LOG(LogTemp, Warning, TEXT("OnEmptyClicked"));
 
 	
+}
+
+void AGameController::OnRestartAction()
+{
+	for (ACell* CellActor : MinesweeperGridDataAsset->Cells)
+		CellActor->Destroy();
+
+	MinesweeperGridDataAsset->Reset();
+	GameDataAsset->Reset();
+
+	GameStatusText->SetVisibility(ESlateVisibility::Hidden);
+
+	StartGeneratingMinesweeperGrid();
 }
 
 void AGameController::ShowGameStatusText(const char* Value)
