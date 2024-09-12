@@ -36,6 +36,8 @@ void AGameController::StartGeneratingMinesweeperGrid()
 		FillNestedCells();
 
 		AllocateMines();
+
+		CenterMainCameraActor();
 	}
 }
 
@@ -203,6 +205,20 @@ void AGameController::OnRestartAction()
 	GameStatusText->SetVisibility(ESlateVisibility::Hidden);
 
 	StartGeneratingMinesweeperGrid();
+}
+
+void AGameController::CenterMainCameraActor()
+{
+	FVector GridCenter = FVector::ZeroVector;
+	
+	for (ACell* CellActor : MinesweeperGridDataAsset->Cells)
+		GridCenter += CellActor->GetActorLocation();
+
+	GridCenter /= MinesweeperGridDataAsset->Cells.Num();
+
+	GridCenter.X = MainCameraActor->GetActorLocation().X;
+
+	MainCameraActor->SetActorLocation(GridCenter);
 }
 
 void AGameController::ShowGameStatusText(const char* Value)

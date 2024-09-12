@@ -91,6 +91,8 @@ private:
 	UFUNCTION()
 	void OnRestartAction();
 
+	void CenterMainCameraActor();
+	
 	void StartGeneratingMinesweeperGrid();
 	
 	void ShowGameStatusText(const char* Value);
