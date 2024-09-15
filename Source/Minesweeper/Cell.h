@@ -9,6 +9,8 @@
 #include "GameFramework/Actor.h"
 #include "Cell.generated.h"
 
+class UMinesweeperGridDataAsset;
+class UTextBlock;
 class UImage;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnMineClickedSignature);
@@ -30,6 +32,15 @@ public:
 	int32 GridIndexX;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Cell")
 	int32 GridIndexY;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Cell")
+	int32 NeighbourMineCount;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Cell")
+	int32 GridXLength;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Cell")
+	int32 GridYLength;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Game")
+	UMinesweeperGridDataAsset* MinesweeperGridDataAsset;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnMineClickedSignature MineClickedDelegate;
@@ -37,6 +48,7 @@ public:
 	FOnEmptyClickedSignature EmptyClickedDelegate;
 
 	void Reveal();
+	void FloodFill();
 
 protected:
 	// Called when the game starts or when spawned
@@ -45,6 +57,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	void ShowNeighbourMineCount();
 
 	UCellWidget* GetCellWidget();
 
@@ -63,6 +76,8 @@ private:
 	TObjectPtr<UImage> FlagImage;
 	UPROPERTY()
 	TObjectPtr<UImage> MineImage;
+	UPROPERTY()
+	TObjectPtr<UTextBlock> NeighbourMineCountText;
 	
 	bool bIsMarkOn;
 };

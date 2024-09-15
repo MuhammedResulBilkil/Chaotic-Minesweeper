@@ -25,6 +25,7 @@ public:
 	AGameController();
 	void SetNestedCellsSize();
 	void SpawnCells();
+	void CountNeighbourMines();
 	void FillNestedCells();
 	void AllocateMines();
 

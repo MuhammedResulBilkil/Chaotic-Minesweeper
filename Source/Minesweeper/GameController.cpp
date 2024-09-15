@@ -37,6 +37,8 @@ void AGameController::StartGeneratingMinesweeperGrid()
 
 		AllocateMines();
 
+		CountNeighbourMines();
+
 		CenterMainCameraActor();
 	}
 }
@@ -104,6 +106,42 @@ void AGameController::SpawnCells()
 	}
 
 	GameDataAsset->TotalEmptyCells = MinesweeperGridDataAsset->Cells.Num();
+}
+
+void AGameController::CountNeighbourMines()
+{
+	for (ACell* CellActor : MinesweeperGridDataAsset->Cells)
+	{
+		CellActor->GridXLength = MinesweeperGridDataAsset->NestedCells.Num();
+		CellActor->GridYLength = MinesweeperGridDataAsset->NestedCells[0].Num();
+		
+		if(CellActor->CellType == ECT_Mine)
+		{
+			CellActor->NeighbourMineCount = -1;
+			continue;
+		}
+
+		int32 TotalNeighbourMines = 0;
+
+		for (int xOff = -1; xOff <=1; xOff++)
+		{
+			for (int yOff = -1; yOff <=1; yOff++)
+			{
+				int i = CellActor->GridIndexX + xOff;
+				int j = CellActor->GridIndexY + yOff;
+
+				if (i > -1 && i < MinesweeperGridDataAsset->NestedCells.Num() && j > -1 && j < MinesweeperGridDataAsset->NestedCells[0].Num())
+				{
+					ACell* NeighbourCell = MinesweeperGridDataAsset->NestedCells[i][j];
+                
+					if(NeighbourCell->CellType == ECT_Mine)
+						TotalNeighbourMines++;
+				}
+			}
+		}
+
+		CellActor->NeighbourMineCount = TotalNeighbourMines;
+	}
 }
 
 void AGameController::SetNestedCellsSize()

@@ -4,7 +4,9 @@
 #include "Cell.h"
 
 #include "CellWidget.h"
+#include "MinesweeperGridDataAsset.h"
 #include "Components/Image.h"
+#include "Components/TextBlock.h"
 #include "Components/WidgetComponent.h"
 
 // Sets default values
@@ -29,6 +31,7 @@ void ACell::BeginPlay()
 
 	FlagImage = (UImage*) GetCellWidget()->GetWidgetFromName("Image_Flag");
 	MineImage = (UImage*) GetCellWidget()->GetWidgetFromName("Image_Mine");
+	NeighbourMineCountText = (UTextBlock*) GetCellWidget()->GetWidgetFromName("Text_NeighbourMineCount");
 }
 
 // Called every frame
@@ -36,6 +39,12 @@ void ACell::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ACell::ShowNeighbourMineCount()
+{
+	if(NeighbourMineCount > 0)
+		NeighbourMineCountText->SetText(FText::FromString(FString::FromInt(NeighbourMineCount)));
 }
 
 void ACell::Reveal()
@@ -46,12 +55,52 @@ void ACell::Reveal()
 		MineImage->SetVisibility(ESlateVisibility::Visible);
 
 		MineClickedDelegate.Broadcast();
+
+		return;
 	}
-	else if (CellType == ECT_Empty)
+
+	FlagImage->SetVisibility(ESlateVisibility::Hidden);
+
+	if (CellType == ECT_Empty && NeighbourMineCount != 0)
 	{
 		CellMaterialInstanceDynamic->SetVectorParameterValue("BaseColor", FLinearColor::Green);
 
-		EmptyClickedDelegate.Broadcast();
+		ShowNeighbourMineCount();
+
+		//EmptyClickedDelegate.Broadcast();
+	}
+
+	CellType = ECT_Revealed;
+	
+	if(NeighbourMineCount == 0)
+	{
+		CellMaterialInstanceDynamic->SetVectorParameterValue("BaseColor", FLinearColor::Green);
+
+		FloodFill();
+	}
+}
+
+void ACell::FloodFill()
+{
+	for (int xOff = -1; xOff <= 1; xOff++)
+	{
+		for (int yOff = -1; yOff <= 1; yOff++)
+		{
+			int i = GridIndexX + xOff;
+			int j = GridIndexY + yOff;
+                
+			if (i > -1 && i < GridXLength && j > -1 && j < GridYLength)
+			{
+				ACell* neighbour = MinesweeperGridDataAsset->NestedCells[i][j];
+                    
+				if (neighbour->CellType != ECT_Mine && neighbour->CellType != ECT_Revealed)
+				{
+					neighbour->CellMaterialInstanceDynamic->SetVectorParameterValue("BaseColor", FLinearColor::Green);
+
+					neighbour->Reveal();
+				}
+			}
+		}
 	}
 }
 
