@@ -83,11 +83,13 @@ private:
 	void OnGridAsSquareSliderValueChanged(float Value);
 	UFUNCTION()
 	void OnMineCountSliderValueChanged(float Value);
-	
+
 	UFUNCTION()
 	void OnMineClicked();
 	UFUNCTION()
 	void OnEmptyClicked();
+	UFUNCTION()
+	void OnCheckIsGameEnd();
 
 	UFUNCTION()
 	void OnRestartAction();
@@ -97,4 +99,7 @@ private:
 	void StartGeneratingMinesweeperGrid();
 	
 	void ShowGameStatusText(const char* Value);
+
+	void PlayerWins();
+	void PlayerLost();
 };

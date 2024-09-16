@@ -9,12 +9,14 @@
 #include "GameFramework/Actor.h"
 #include "Cell.generated.h"
 
+class UGameDataAsset;
 class UMinesweeperGridDataAsset;
 class UTextBlock;
 class UImage;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnMineClickedSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEmptyClickedSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCheckIsGameEndSignature);
 
 UCLASS()
 class MINESWEEPER_API ACell : public AActor
@@ -41,14 +43,19 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Game")
 	UMinesweeperGridDataAsset* MinesweeperGridDataAsset;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Game")
+	UGameDataAsset* GameDataAsset;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnMineClickedSignature MineClickedDelegate;
 	UPROPERTY(BlueprintAssignable)
 	FOnEmptyClickedSignature EmptyClickedDelegate;
+	UPROPERTY(BlueprintAssignable)
+	FOnCheckIsGameEndSignature CheckIsGameEndDelegate;
 
+	void ShowMark();
+	void ShowCell();
 	void Reveal();
-	void FloodFill();
 
 protected:
 	// Called when the game starts or when spawned
@@ -57,11 +64,6 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	void ShowNeighbourMineCount();
-
-	UCellWidget* GetCellWidget();
-
-	void ShowMark();
 
 private:
 
@@ -79,5 +81,12 @@ private:
 	UPROPERTY()
 	TObjectPtr<UTextBlock> NeighbourMineCountText;
 	
+	bool bIsRevealedOnce;
+	bool bIsTotalEmptyCellsDecreased;
 	bool bIsMarkOn;
+	
+	void ShowNeighbourMineCount();
+	void FloodFill();
+	
+	UCellWidget* GetCellWidget();
 };

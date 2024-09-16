@@ -101,6 +101,7 @@ void AGameController::SpawnCells()
 		spawnedCell->CellType = ECT_Empty;
 		spawnedCell->MineClickedDelegate.AddDynamic(this, &AGameController::OnMineClicked);
 		spawnedCell->EmptyClickedDelegate.AddDynamic(this, &AGameController::OnEmptyClicked);
+		spawnedCell->CheckIsGameEndDelegate.AddDynamic(this, &AGameController::OnCheckIsGameEnd);
 
 		MinesweeperGridDataAsset->Cells.Add(spawnedCell);
 	}
@@ -152,6 +153,14 @@ void AGameController::SetNestedCellsSize()
 		MinesweeperGridDataAsset->NestedCells[i].SetNum(MinesweeperGridDataAsset->Height);
 }
 
+void AGameController::OnCheckIsGameEnd()
+{
+	GameDataAsset->TotalEmptyCells--;
+	
+	if(GameDataAsset->TotalEmptyCells == 0)
+		PlayerWins();
+}
+
 void AGameController::FillNestedCells()
 {
 	int32 index = 0;
@@ -178,8 +187,13 @@ void AGameController::AllocateMines()
 		int32 j = FMath::RandRange(0, MinesweeperGridDataAsset->NestedCells.Num() - 1);
 		int32 k = FMath::RandRange(0, MinesweeperGridDataAsset->NestedCells[j].Num() - 1);
 
+		if(MinesweeperGridDataAsset->NestedCells[j][k]->CellType == ECT_Mine)
+		{
+			i--;
+			continue;
+		}
+		
 		MinesweeperGridDataAsset->NestedCells[j][k]->CellType = ECT_Mine;
-
 		GameDataAsset->TotalEmptyCells--;
 	}
 }
@@ -196,7 +210,6 @@ void AGameController::OnCameraDistanceSliderValueChanged(float Value)
 
 void AGameController::OnGridAsSquareSliderValueChanged(float Value)
 {
-	//log
 	UE_LOG(LogTemp, Warning, TEXT("GridAsSquareSliderValueChanged: %f"), Value);
 
 	GridAsSquareText->SetText(FText::FromString(FString::Printf(TEXT("Grid as Square: %d"), (int)Value)));
@@ -207,7 +220,6 @@ void AGameController::OnGridAsSquareSliderValueChanged(float Value)
 
 void AGameController::OnMineCountSliderValueChanged(float Value)
 {
-	//log
 	UE_LOG(LogTemp, Warning, TEXT("MineCountSliderValueChanged: %f"), Value);
 
 	MineCountText->SetText(FText::FromString(FString::Printf(TEXT("Mine Count: %d"), (int)Value)));
@@ -215,7 +227,20 @@ void AGameController::OnMineCountSliderValueChanged(float Value)
 	MinesweeperGridDataAsset->MineCount = (int32) Value;
 }
 
-void AGameController::OnMineClicked()
+void AGameController::PlayerWins()
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnCheckIsGameEnd - PlayerWon!"));
+		
+	GameDataAsset->bIsGameOver = true;
+	GameDataAsset->bIsPlayerWinner = true;
+
+	ShowGameStatusText("<Style.Bold>You Won!</>");
+
+	for (ACell* CellActor : MinesweeperGridDataAsset->Cells)
+		CellActor->ShowCell();
+}
+
+void AGameController::PlayerLost()
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnMineClicked - PlayerLost!"));
 		
@@ -223,6 +248,14 @@ void AGameController::OnMineClicked()
 	GameDataAsset->bIsPlayerWinner = false;
 
 	ShowGameStatusText("<Style.Bold>You Lost!</>");
+
+	for (ACell* CellActor : MinesweeperGridDataAsset->Cells)
+		CellActor->ShowCell();
+}
+
+void AGameController::OnMineClicked()
+{
+	PlayerLost();
 }
 
 void AGameController::OnEmptyClicked()
