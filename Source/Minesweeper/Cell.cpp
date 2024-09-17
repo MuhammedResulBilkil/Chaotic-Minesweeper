@@ -9,6 +9,7 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/WidgetComponent.h"
+#include "GeometryCollection/GeometryCollectionComponent.h"
 
 // Sets default values
 ACell::ACell()
@@ -22,6 +23,8 @@ void ACell::BeginPlay()
 {
 	Super::BeginPlay();
 
+	CellGeometryCollectionComponent = FindComponentByClass<UGeometryCollectionComponent>();
+	
 	CellStaticMeshComponent = FindComponentByClass<UStaticMeshComponent>();
 	CellMaterialInstanceDynamic = CellStaticMeshComponent->
 		CreateAndSetMaterialInstanceDynamicFromMaterial(0, CellStaticMeshComponent->GetMaterial(0));

@@ -73,6 +73,9 @@ private:
 	TObjectPtr<UStaticMeshComponent> CellStaticMeshComponent;
 	UPROPERTY()
 	TObjectPtr<UMaterialInstanceDynamic> CellMaterialInstanceDynamic;
+
+	UPROPERTY()
+	TObjectPtr<UGeometryCollectionComponent> CellGeometryCollectionComponent;
 	
 	UPROPERTY()
 	TObjectPtr<UImage> FlagImage;
