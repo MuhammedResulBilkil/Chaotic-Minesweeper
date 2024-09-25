@@ -182,7 +182,16 @@ void AGameController::FillNestedCells()
 
 void AGameController::AllocateMines()
 {
-	for (int32 i = 0; i < MinesweeperGridDataAsset->MineCount; i++)
+	int32 MineCount = MinesweeperGridDataAsset->MineCount;
+	
+	if(MineCount > MinesweeperGridDataAsset->Cells.Num())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("MineCount is greater than total cells!"));
+
+		MineCount = MinesweeperGridDataAsset->Cells.Num();
+	}
+	
+	for (int32 i = 0; i < MineCount; i++)
 	{
 		int32 j = FMath::RandRange(0, MinesweeperGridDataAsset->NestedCells.Num() - 1);
 		int32 k = FMath::RandRange(0, MinesweeperGridDataAsset->NestedCells[j].Num() - 1);
