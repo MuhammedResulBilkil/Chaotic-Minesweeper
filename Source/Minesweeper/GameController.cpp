@@ -268,7 +268,13 @@ void AGameController::OnEmptyClicked()
 void AGameController::OnRestartAction()
 {
 	for (ACell* CellActor : MinesweeperGridDataAsset->Cells)
+	{
+		CellActor->MineClickedDelegate.RemoveDynamic(this, &AGameController::OnMineClicked);
+		CellActor->EmptyClickedDelegate.RemoveDynamic(this, &AGameController::OnEmptyClicked);
+		CellActor->CheckIsGameEndDelegate.RemoveDynamic(this, &AGameController::OnCheckIsGameEnd);
+		
 		CellActor->Destroy();
+	}
 
 	MinesweeperGridDataAsset->Reset();
 	GameDataAsset->Reset();

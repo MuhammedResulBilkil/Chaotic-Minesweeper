@@ -55,6 +55,7 @@ public:
 
 	void ShowMark();
 	void ShowCell();
+	void DestroyCell();
 	void Reveal();
 
 protected:

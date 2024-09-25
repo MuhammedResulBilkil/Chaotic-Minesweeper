@@ -75,6 +75,15 @@ void ACell::ShowCell()
 	}
 }
 
+void ACell::DestroyCell()
+{
+	CellStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);
+	
+	CellGeometryCollectionComponent->SetSimulatePhysics(true);
+	CellGeometryCollectionComponent->SetVisibility(true);
+	CellGeometryCollectionComponent->AddRadialImpulse(GetActorLocation(), 1000.0f, 1000.0f, RIF_Linear, true);
+}
+
 void ACell::ShowNeighbourMineCount()
 {
 	if (NeighbourMineCount > 0)
@@ -116,6 +125,8 @@ void ACell::Reveal()
 	{
 		if (!bIsRevealedOnce)
 		{
+			DestroyCell();
+			
 			CellMaterialInstanceDynamic->SetVectorParameterValue("BaseColor", FLinearColor::Green);
 
 			bIsRevealedOnce = true;
