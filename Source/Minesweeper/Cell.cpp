@@ -23,7 +23,8 @@ void ACell::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CellGeometryCollectionComponent = FindComponentByClass<UGeometryCollectionComponent>();
+	CellGeometryCollectionComponentRevealed = FindComponentByTag<UGeometryCollectionComponent>("GC_Cell_Revealed");
+	CellGeometryCollectionComponentMine = FindComponentByTag<UGeometryCollectionComponent>("GC_Cell_Mine");
 	
 	CellStaticMeshComponent = FindComponentByClass<UStaticMeshComponent>();
 	CellMaterialInstanceDynamic = CellStaticMeshComponent->
@@ -61,6 +62,8 @@ void ACell::ShowCell()
 		{
 			MineImage->SetVisibility(ESlateVisibility::Visible);
 			CellMaterialInstanceDynamic->SetVectorParameterValue("BaseColor", FLinearColor::Red);
+
+			DestroyCell(CellGeometryCollectionComponentMine);
 		}
 		break;
 	case ECT_Revealed:
@@ -75,7 +78,7 @@ void ACell::ShowCell()
 	}
 }
 
-void ACell::DestroyCell()
+void ACell::DestroyCell(UGeometryCollectionComponent* CellGeometryCollectionComponent)
 {
 	CellStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);
 	
@@ -125,9 +128,9 @@ void ACell::Reveal()
 	{
 		if (!bIsRevealedOnce)
 		{
-			DestroyCell();
-			
 			CellMaterialInstanceDynamic->SetVectorParameterValue("BaseColor", FLinearColor::Green);
+
+			DestroyCell(CellGeometryCollectionComponentRevealed);
 
 			bIsRevealedOnce = true;
 		}

@@ -55,7 +55,7 @@ public:
 
 	void ShowMark();
 	void ShowCell();
-	void DestroyCell();
+	void DestroyCell(UGeometryCollectionComponent* CellGeometryCollectionComponent);
 	void Reveal();
 
 protected:
@@ -76,7 +76,9 @@ private:
 	TObjectPtr<UMaterialInstanceDynamic> CellMaterialInstanceDynamic;
 
 	UPROPERTY()
-	TObjectPtr<UGeometryCollectionComponent> CellGeometryCollectionComponent;
+	TObjectPtr<UGeometryCollectionComponent> CellGeometryCollectionComponentRevealed;
+	UPROPERTY()
+	TObjectPtr<UGeometryCollectionComponent> CellGeometryCollectionComponentMine;
 	
 	UPROPERTY()
 	TObjectPtr<UImage> FlagImage;
