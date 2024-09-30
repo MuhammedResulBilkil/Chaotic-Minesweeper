@@ -96,7 +96,10 @@ void AGameController::SpawnCells()
 	for (FVector GridCenterPoss : MinesweeperGridDataAsset->GridCenterPosses)
 	{
 		ACell* spawnedCell = GetWorld()->SpawnActor<ACell>(Cell, GridCenterPoss, FRotator::ZeroRotator);
-		spawnedCell->SetActorLabel(FString::Printf(TEXT("Cell_%d"), index++));
+#if WITH_EDITOR
+  spawnedCell->SetActorLabel(FString::Printf(TEXT("Cell_%d"), index++));
+#endif
+
 		spawnedCell->AttachToActor(MinesweeperGridDataAsset->GridStartLocation, FAttachmentTransformRules::KeepWorldTransform);
 		spawnedCell->CellType = ECT_Empty;
 		spawnedCell->MineClickedDelegate.AddDynamic(this, &AGameController::OnMineClicked);
@@ -175,7 +178,9 @@ void AGameController::FillNestedCells()
 			MinesweeperGridDataAsset->NestedCells[i][j]->GridIndexX = i;
 			MinesweeperGridDataAsset->NestedCells[i][j]->GridIndexY = j;
 
-			UE_LOG(LogTemp, Warning, TEXT("NestedCells[%d][%d]: %s"), i, j, *MinesweeperGridDataAsset->NestedCells[i][j]->GetActorLabel());
+#if WITH_EDITOR
+  UE_LOG(LogTemp, Warning, TEXT("NestedCells[%d][%d]: %s"), i, j, *MinesweeperGridDataAsset->NestedCells[i][j]->GetActorLabel());
+#endif
 		}
 	}
 }

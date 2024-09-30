@@ -97,8 +97,11 @@ void APlayerActor::OnCellClickAction()
 	if (HitResult.bBlockingHit)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("HitResult: %s"), *HitResult.ImpactPoint.ToString());
+#if WITH_EDITOR
 		UE_LOG(LogTemp, Warning, TEXT("HitResult Actor Name: %s"), *HitResult.GetActor()->GetActorLabel());
-		
+#endif
+
+
 		if (IsLineTraceHitCell(HitResult, &CellActor))
 			if(CellActor->CellType != ECT_Revealed)
 				CellActor->Reveal();
@@ -120,7 +123,10 @@ void APlayerActor::OnCellMarkAction()
 	if (HitResult.bBlockingHit)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("HitResult: %s"), *HitResult.ImpactPoint.ToString());
-		UE_LOG(LogTemp, Warning, TEXT("HitResult Actor Name: %s"), *HitResult.GetActor()->GetActorLabel());
+#if WITH_EDITOR
+  UE_LOG(LogTemp, Warning, TEXT("HitResult Actor Name: %s"), *HitResult.GetActor()->GetActorLabel());
+#endif
+
 
 		if (IsLineTraceHitCell(HitResult, &CellActor))
 			if (CellActor->CellType != ECT_Revealed)
